@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const Square = ({ value, setValue }) => {
+const Square = ({ value, onClick }) => {
   return (
-    <button className='square' onClick={setValue}>
+    <button className='square' onClick={onClick}>
       {value}
     </button>
   );
@@ -12,15 +12,7 @@ const Square = ({ value, setValue }) => {
 
 const Board = ({ complete, setWinner, setComplete }) => {
   const [init, setInit] = useState(false);
-  const [value0, setValue0] = useState('');
-  const [value1, setValue1] = useState('');
-  const [value2, setValue2] = useState('');
-  const [value3, setValue3] = useState('');
-  const [value4, setValue4] = useState('');
-  const [value5, setValue5] = useState('');
-  const [value6, setValue6] = useState('');
-  const [value7, setValue7] = useState('');
-  const [value8, setValue8] = useState('');
+  const [values, setValues] = useState(Array(9).fill(''));
   const [currentUser, setCurrentUser] = useState('X');
   const status = `Next player: ${currentUser}`;
 
@@ -39,80 +31,51 @@ const Board = ({ complete, setWinner, setComplete }) => {
         setWinner(currentUser);
         return;
       }
-      if (isComplete()) {
+      if (values.indexOf('') < 0) {
         setInit(false);
         setComplete(true);
         return;
       }
       setCurrentUser(currentUser === 'X' ? 'O' : 'X');
     }
-  }, [value0, value1, value2, value3, value4, value5, value6, value7, value8]);
+  }, [values]);
 
-  function checkBoard() {
-    const row =
-      (value0 === value1 &&
-        value1 === value2 &&
-        [value0, value1, value2].indexOf('') < 0) ||
-      (value3 === value4 &&
-        value4 === value5 &&
-        [value3, value4, value5].indexOf('') < 0) ||
-      (value6 === value7 &&
-        value7 === value8 &&
-        [value6, value7, value8].indexOf('') < 0);
-    const col =
-      (value0 === value3 &&
-        value3 === value6 &&
-        [value0, value3, value6].indexOf('') < 0) ||
-      (value1 === value4 &&
-        value4 === value7 &&
-        [value1, value4, value7].indexOf('') < 0) ||
-      (value2 === value5 &&
-        value5 === value8 &&
-        [value2, value5, value8].indexOf('') < 0);
-    const diag =
-      (value1 === value4 &&
-        value4 === value8 &&
-        [value1, value4, value8].indexOf('') < 0) ||
-      (value6 === value4 &&
-        value4 === value2 &&
-        [value6, value4, value2].indexOf('') < 0);
-    return row || col || diag;
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
   }
 
-  function isComplete() {
-    return (
-      value0 &&
-      value1 &&
-      value2 &&
-      value3 &&
-      value4 &&
-      value5 &&
-      value6 &&
-      value7 &&
-      value8
-    );
+  function checkBoard() {
+    const checks = [
+      [values[0], values[1], values[2]].filter(onlyUnique),
+      [values[3], values[4], values[5]].filter(onlyUnique),
+      [values[6], values[7], values[8]].filter(onlyUnique),
+      [values[0], values[3], values[6]].filter(onlyUnique),
+      [values[1], values[4], values[7]].filter(onlyUnique),
+      [values[6], values[7], values[8]].filter(onlyUnique),
+      [values[0], values[4], values[8]].filter(onlyUnique),
+      [values[2], values[4], values[6]].filter(onlyUnique)
+    ].filter(val => val.length === 1 && val.indexOf('') < 0);
+    return checks.length > 0;
   }
 
   function reset() {
-    setValue0('');
-    setValue1('');
-    setValue2('');
-    setValue3('');
-    setValue4('');
-    setValue5('');
-    setValue6('');
-    setValue7('');
-    setValue8('');
-    setWinner('');
+    setValues(Array(9).fill(''));
     setCurrentUser('X');
     setComplete(false);
   }
 
-  function renderSquare(value, setValue) {
+  function renderSquare(i) {
+    const value = values[i];
     return (
       <Square
         value={value}
-        setValue={() => init && !value && setValue(currentUser)}
+        onClick={() => {
+          if (init && !value) {
+            const newValues = values.slice();
+            newValues[i] = currentUser;
+            setValues(newValues);
+          }
+        }}
       />
     );
   }
@@ -121,19 +84,19 @@ const Board = ({ complete, setWinner, setComplete }) => {
     <div>
       <div className='status'>{status}</div>
       <div className='board-row'>
-        {renderSquare(value0, setValue0)}
-        {renderSquare(value1, setValue1)}
-        {renderSquare(value2, setValue2)}
+        {renderSquare(0)}
+        {renderSquare(1)}
+        {renderSquare(2)}
       </div>
       <div className='board-row'>
-        {renderSquare(value3, setValue3)}
-        {renderSquare(value4, setValue4)}
-        {renderSquare(value5, setValue5)}
+        {renderSquare(3)}
+        {renderSquare(4)}
+        {renderSquare(5)}
       </div>
       <div className='board-row'>
-        {renderSquare(value6, setValue6)}
-        {renderSquare(value7, setValue7)}
-        {renderSquare(value8, setValue8)}
+        {renderSquare(6)}
+        {renderSquare(7)}
+        {renderSquare(8)}
       </div>
       {complete && (
         <div>
