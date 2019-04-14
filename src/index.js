@@ -40,20 +40,24 @@ const Board = ({ complete, setWinner, setComplete }) => {
     }
   }, [values]);
 
+  function filterByIndex(items, indexes) {
+    return items.filter((_, i) => indexes.indexOf(i) >= 0);
+  }
+
   function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
 
   function checkBoard() {
     const checks = [
-      [values[0], values[1], values[2]],
-      [values[3], values[4], values[5]],
-      [values[6], values[7], values[8]],
-      [values[0], values[3], values[6]],
-      [values[1], values[4], values[7]],
-      [values[6], values[7], values[8]],
-      [values[0], values[4], values[8]],
-      [values[2], values[4], values[6]]
+      filterByIndex(values, [0, 1, 2]),
+      filterByIndex(values, [3, 4, 5]),
+      filterByIndex(values, [6, 7, 8]),
+      filterByIndex(values, [0, 3, 6]),
+      filterByIndex(values, [1, 4, 7]),
+      filterByIndex(values, [6, 7, 8]),
+      filterByIndex(values, [0, 4, 8]),
+      filterByIndex(values, [2, 4, 6])
     ]
       .map(val => val.filter(onlyUnique))
       .filter(val => val.length === 1 && val.indexOf('') < 0);
