@@ -74,6 +74,7 @@ const Board = ({ complete, setWinner, setComplete }) => {
     const value = values[i];
     return (
       <Square
+        key={i}
         value={value}
         onClick={() => {
           if (init && !value) {
@@ -89,21 +90,11 @@ const Board = ({ complete, setWinner, setComplete }) => {
   return (
     <div>
       <div className='status'>{status}</div>
-      <div className='board-row'>
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className='board-row'>
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className='board-row'>
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
+      {[[0, 1, 2], [3, 4, 5], [6, 7, 8]].map((row, i) => (
+        <div key={i} className='board-row'>
+          {row.map(val => renderSquare(val))}
+        </div>
+      ))}
       {complete && (
         <div>
           <button onClick={reset}>RESET</button>
