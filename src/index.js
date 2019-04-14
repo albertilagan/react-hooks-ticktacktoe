@@ -46,15 +46,17 @@ const Board = ({ complete, setWinner, setComplete }) => {
 
   function checkBoard() {
     const checks = [
-      [values[0], values[1], values[2]].filter(onlyUnique),
-      [values[3], values[4], values[5]].filter(onlyUnique),
-      [values[6], values[7], values[8]].filter(onlyUnique),
-      [values[0], values[3], values[6]].filter(onlyUnique),
-      [values[1], values[4], values[7]].filter(onlyUnique),
-      [values[6], values[7], values[8]].filter(onlyUnique),
-      [values[0], values[4], values[8]].filter(onlyUnique),
-      [values[2], values[4], values[6]].filter(onlyUnique)
-    ].filter(val => val.length === 1 && val.indexOf('') < 0);
+      [values[0], values[1], values[2]],
+      [values[3], values[4], values[5]],
+      [values[6], values[7], values[8]],
+      [values[0], values[3], values[6]],
+      [values[1], values[4], values[7]],
+      [values[6], values[7], values[8]],
+      [values[0], values[4], values[8]],
+      [values[2], values[4], values[6]]
+    ]
+      .map(val => val.filter(onlyUnique))
+      .filter(val => val.length === 1 && val.indexOf('') < 0);
     return checks.length > 0;
   }
 
